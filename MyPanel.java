@@ -21,6 +21,9 @@ public class MyPanel extends JPanel implements ActionListener{
         repaint();
     }
 
+    public static int moveX = 0;
+    public static int moveY = -800;
+
     @Override
     public void paint(Graphics g){
         g.setColor(Color.black);
@@ -28,27 +31,31 @@ public class MyPanel extends JPanel implements ActionListener{
         g.setColor(Color.white);
         this.g = (Graphics2D) g;
         int segmentLength=this.getHeight();
-        fractal(PANEL_WIDTH/2, PANEL_HEIGHT, segmentLength);
+        fractal(PANEL_WIDTH/2 + moveX, PANEL_HEIGHT*2+ moveY, segmentLength, 0);
     }
 
     static double angle1 = 60;
     static double angle2 = -60;
-    void fractal(int x, int y, int segmentLength){
-        if(segmentLength*10<1) return;
+    static double sizeMultiplier = 1;
+    static int counterLimit = 15;
+    void fractal(int x, int y, int segmentLength, int counter){
+        if(counter > counterLimit) return;
         g.translate(x, y);
-        int drawLength = segmentLength/4;
-        g.drawLine(0, 0, 0, -drawLength);
+        int drawLength = (int) (segmentLength*sizeMultiplier/4);
+        int realDrawLength = drawLength;
+        if(realDrawLength<1) realDrawLength=1;
+        g.drawLine(0, 0, 0, -realDrawLength);
 
         g.translate(0, -drawLength);
 
         g.rotate(angle1/180*Math.PI);
-        fractal(0, 0, segmentLength/3*2);
+        fractal(0, 0, segmentLength/3*2, counter+1);
         //g.translate(0, segmentLength);
         g.rotate(-angle1/180*Math.PI);
 
 
         g.rotate((angle2)/180*Math.PI);
-        fractal(0, 0, segmentLength/3*2);
+        fractal(0, 0, segmentLength/3*2, counter+1);
         g.rotate(-(angle2)/180*Math.PI);
         g.translate(0, drawLength);
     }
